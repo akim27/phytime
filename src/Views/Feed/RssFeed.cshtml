@@ -14,7 +14,7 @@
     {
         <a href="@Url.Action("Subscribe", "Feed", new { url = Model.FeedValue.Url })" class="btn btn-sm btn-success">Subscribe</a>
     }
-    <a href="@Url.Action("ShowAngular", "Feed", new { id = Model.FeedValue.Id })" class="btn btn-sm btn-primary">Show in angular</a>
+    <a href="@Url.Action("ShowAngular", "Feed", new { id = Model.FeedValue.Id })" target="_blank" class="btn btn-sm btn-primary">Show in angular</a>
 </div>
 @using (Html.BeginForm("Sort", "Feed"))
 {
