@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Microsoft.Extensions.Options;
 
 namespace Phytime
 {
@@ -54,7 +55,14 @@ namespace Phytime
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddHostedService<EmailService>();
+            services.AddHostedService (serviceProvider => new EmailService(
+                serviceProvider.GetService<IOptions<EmailServiceOptions>>(),
+                serviceProvider.GetService<IOptions<ConnectionStringsOptions>>()));
+
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -63,11 +71,10 @@ namespace Phytime
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseStaticFiles();
-            if (!env.IsDevelopment())
-            {
-                app.UseSpaStaticFiles();
-            }
+            //if (!env.IsDevelopment())
+            //{
+            //    app.UseSpaStaticFiles();
+            //}
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();
@@ -83,7 +90,7 @@ namespace Phytime
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "ClientApp";
+                spa.Options.SourcePath = "ClientApp/dist";
 
                 if (env.IsDevelopment())
                 {

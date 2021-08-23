@@ -14,9 +14,9 @@ namespace Phytime.Controllers
     {
         private readonly UserRepository _userRepository;
 
-        public AccountController()
+        public AccountController(PhytimeContext context)
         {
-            _userRepository = new UserRepository();
+            _userRepository = new UserRepository(context);
         }
 
         [HttpGet]

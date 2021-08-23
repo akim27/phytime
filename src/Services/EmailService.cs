@@ -21,11 +21,12 @@ namespace Phytime.Services
         private readonly IRepository<Feed> _feedRepository;
         private Timer _timer;    
 
-        public EmailService(IOptions<EmailServiceOptions> options, IRepository<Feed> repository = null)
+        public EmailService(IOptions<EmailServiceOptions> optionsEmail, IOptions<ConnectionStringsOptions> optionsStrings,
+            IRepository<Feed> repository = null)
         {
             _rssSource = RssSource.getInstance();
-            _options = options.Value;
-            _feedRepository = repository ?? new FeedRepository();
+            _options = optionsEmail.Value;
+            _feedRepository = repository ?? new FeedRepository(optionsStrings.Value.DefaultConnection);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

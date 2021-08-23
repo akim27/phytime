@@ -17,9 +17,9 @@ namespace Phytime.Controllers
         private const int FirstValidId = 1;
         private readonly IRepository<Feed> _feedRepository;
 
-        public ItemsController(IRepository<Feed> repository = null)
+        public ItemsController(PhytimeContext context, IRepository<Feed> repository = null)
         {
-            _feedRepository = repository ?? new FeedRepository();
+            _feedRepository = repository ?? new FeedRepository(context);
         }
 
         [HttpGet("{id:int}")]

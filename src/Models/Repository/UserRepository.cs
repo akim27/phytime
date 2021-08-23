@@ -9,14 +9,6 @@ namespace Phytime.Models
     public class UserRepository : IRepository<User>
     {
         private PhytimeContext _db;
-        private const string ConnectionString = "Server=(localdb)\\mssqllocaldb;Database=phytime2021db;Trusted_Connection=True;";
-
-        public UserRepository()
-        {
-            var options = new DbContextOptionsBuilder<PhytimeContext>();
-            options.UseSqlServer(ConnectionString);
-            _db = new PhytimeContext(options.Options);
-        }
 
         public UserRepository(PhytimeContext context)
         {

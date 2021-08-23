@@ -3,26 +3,23 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Phytime.Models
 {
     public class FeedRepository : IRepository<Feed>
     {
         private PhytimeContext _db;
-        private const string ConnectionString = "Server=(localdb)\\mssqllocaldb;Database=phytime2021db;Trusted_Connection=True;";
-
-        public FeedRepository()
-        {
-            var options = new DbContextOptionsBuilder<PhytimeContext>();
-            options.UseSqlServer(ConnectionString);
-            _db = new PhytimeContext(options.Options);
-        }
 
         public FeedRepository(PhytimeContext context)
         {
             _db = context;
+        }
+
+        public FeedRepository(string connectionString)
+        {
+            var options = new DbContextOptionsBuilder<PhytimeContext>();
+            options.UseSqlServer(connectionString);
+            _db = new PhytimeContext(options.Options);
         }
 
         public void Add(Feed item)
