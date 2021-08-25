@@ -71,10 +71,10 @@ namespace Phytime
             {
                 app.UseDeveloperExceptionPage();
             }
-            //if (!env.IsDevelopment())
-            //{
-            //    app.UseSpaStaticFiles();
-            //}
+            if (!env.IsDevelopment())
+            {
+                app.UseSpaStaticFiles();
+            }
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();
@@ -90,7 +90,7 @@ namespace Phytime
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "ClientApp/dist";
+                spa.Options.SourcePath = "ClientApp";
 
                 if (env.IsDevelopment())
                 {
