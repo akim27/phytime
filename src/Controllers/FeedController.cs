@@ -7,6 +7,7 @@ using System.Xml;
 using Phytime.Services;
 using System;
 using Phytime.ViewModels;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Phytime.Controllers
 {
@@ -18,10 +19,13 @@ namespace Phytime.Controllers
         private readonly IRepository<Feed> _feedRepository;
         private readonly IRepository<User> _userRepository;
 
-        public FeedController(PhytimeContext context, IRepository<Feed> feedRepository = null, IRepository<User> userRepository = null)
+        private IMemoryCache _cache;
+
+        public FeedController(PhytimeContext context, IMemoryCache memoryCache, IRepository<Feed> feedRepository = null, IRepository<User> userRepository = null)
         {
             _feedRepository = feedRepository ?? new FeedRepository(context);
             _userRepository = userRepository ?? new UserRepository(context);
+            _cache = memoryCache;
         }
 
         public IActionResult RssFeed(string url, int page = DefaultPage, string sortValue = DefaultSortValue)
@@ -74,10 +78,20 @@ namespace Phytime.Controllers
             {
                 throw new ArgumentNullException(nameof(url));
             }
-            XmlReader reader = XmlReader.Create(url);
-            SyndicationFeed feed = SyndicationFeed.Load(reader);
-            reader.Close();
-            return feed.Items.ToList();
+            List<SyndicationItem> list = null;
+            if (!_cache.TryGetValue(url, out list))
+            {
+                XmlReader reader = XmlReader.Create(url);
+                SyndicationFeed feed = SyndicationFeed.Load(reader);
+                reader.Close();
+                list = feed.Items.ToList();
+
+                _cache.Set(url, list, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                });
+            }
+            return list;
         }
 
         public bool IsSubscribed(string url)
